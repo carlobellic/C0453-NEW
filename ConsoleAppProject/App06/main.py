@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import math
 
 # Initialize Pygame
 pygame.init()
@@ -65,7 +66,9 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = max(0, min(self.rect.x, SCREEN_WIDTH - self.rect.width))
         self.rect.y = max(0, min(self.rect.y, SCREEN_HEIGHT - self.rect.height))
 
-    def shoot(self, direction):
+    def shoot(self, mouse_pos):
+        direction = pygame.math.Vector2(mouse_pos) - pygame.math.Vector2(self.rect.center)
+        direction = direction.normalize()
         bullet = Bullet(self.rect.centerx, self.rect.centery, direction, self.bullet_speed)
         all_sprites.add(bullet)
         bullets.add(bullet)
@@ -80,14 +83,8 @@ class Bullet(pygame.sprite.Sprite):
         self.speed = speed
 
     def update(self):
-        if self.direction == "left":
-            self.rect.x -= self.speed
-        elif self.direction == "right":
-            self.rect.x += self.speed
-        elif self.direction == "up":
-            self.rect.y -= self.speed
-        elif self.direction == "down":
-            self.rect.y += self.speed
+        self.rect.x += self.direction.x * self.speed
+        self.rect.y += self.direction.y * self.speed
 
         # Remove bullet if it goes off screen
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH or self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT:
@@ -167,15 +164,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                character.shoot("left")
-            elif event.key == pygame.K_d:
-                character.shoot("right")
-            elif event.key == pygame.K_w:
-                character.shoot("up")
-            elif event.key == pygame.K_s:
-                character.shoot("down")
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Left mouse button
+                mouse_pos = pygame.mouse.get_pos()
+                character.shoot(mouse_pos)
         elif event.type == pygame.USEREVENT:
             # Spawn a speed powerup at a random position
             x = random.randint(0, SCREEN_WIDTH)
@@ -216,6 +208,12 @@ while running:
     bullets.update()
     powerups.update()
     enemies.update()
+
+    # Check for collisions between bullets and enemies
+    for bullet in bullets:
+        hits = pygame.sprite.spritecollide(bullet, enemies, True)
+        if hits:
+            bullet.kill()
 
     # Draw / render
     screen.blit(background_img, (0, 0))  # Draw background
