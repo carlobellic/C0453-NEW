@@ -26,10 +26,21 @@ speed_powerup_img = pygame.transform.scale(speed_powerup_img, (20, 20))  # Scale
 background_img = pygame.image.load("stone.png")  # Load background image
 background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))  # Scale background image to fit screen
 
+alien_img = pygame.image.load("alien.png")  # Load enemy image
+alien_img = pygame.transform.scale(alien_img, (40, 40))  # Scale enemy image
+
 # Game settings
 bullet_speed = 5
 character_speed = 5
+initial_enemy_speed = 1.25  # 25% of character speed
+wave_enemy_speed_increase = 0.25  # 5% of character speed
 powerup_spawn_time = 45000  # Powerup spawn interval in milliseconds (45 seconds)
+enemy_spawn_time = 10000  # Enemy spawn interval in milliseconds (10 seconds)
+waves_total = 5
+enemies_per_wave = 5
+
+# Fonts
+font = pygame.font.SysFont(None, 36)
 
 # Classes
 class Character(pygame.sprite.Sprite):
@@ -95,6 +106,32 @@ class SpeedPowerup(pygame.sprite.Sprite):
             character.bullet_speed += 2
             self.kill()
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y, speed):
+        super().__init__()
+        self.image = alien_img
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = speed
+
+    def update(self):
+        # Move the enemy towards the character
+        if self.rect.x < character.rect.x:
+            self.rect.x += self.speed
+        if self.rect.x > character.rect.x:
+            self.rect.x -= self.speed
+        if self.rect.y < character.rect.y:
+            self.rect.y += self.speed
+        if self.rect.y > character.rect.y:
+            self.rect.y -= self.speed
+
+        # Remove enemy if it collides with the character
+        if pygame.sprite.collide_rect(self, character):
+            self.kill()
+            # End the game or reduce health
+            global running
+            running = False
+
 # Initialize character
 character = Character()
 
@@ -102,6 +139,7 @@ character = Character()
 all_sprites = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 powerups = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
 
 all_sprites.add(character)
 
@@ -114,6 +152,13 @@ clock = pygame.time.Clock()
 
 # Powerup timer
 pygame.time.set_timer(pygame.USEREVENT, powerup_spawn_time)
+# Enemy spawn timer
+pygame.time.set_timer(pygame.USEREVENT + 1, enemy_spawn_time)
+
+# Game state
+wave = 1
+enemy_speed = initial_enemy_speed
+enemies_spawned = 0
 
 # Main game loop
 running = True
@@ -138,16 +183,47 @@ while running:
             powerup = SpeedPowerup(x, y)
             all_sprites.add(powerup)
             powerups.add(powerup)
+        elif event.type == pygame.USEREVENT + 1:
+            if wave <= waves_total and enemies_spawned < enemies_per_wave:
+                # Spawn an enemy at a random edge of the screen
+                edge = random.choice(["top", "bottom", "left", "right"])
+                if edge == "top":
+                    x = random.randint(0, SCREEN_WIDTH)
+                    y = 0
+                elif edge == "bottom":
+                    x = random.randint(0, SCREEN_WIDTH)
+                    y = SCREEN_HEIGHT
+                elif edge == "left":
+                    x = 0
+                    y = random.randint(0, SCREEN_HEIGHT)
+                else:
+                    x = SCREEN_WIDTH
+                    y = random.randint(0, SCREEN_HEIGHT)
+
+                enemy = Enemy(x, y, enemy_speed)
+                all_sprites.add(enemy)
+                enemies.add(enemy)
+                enemies_spawned += 1
+
+            if enemies_spawned >= enemies_per_wave and len(enemies) == 0:
+                wave += 1
+                enemies_spawned = 0
+                enemy_speed += wave_enemy_speed_increase
 
     # Update
     keys_pressed = pygame.key.get_pressed()
     character.update(keys_pressed)
     bullets.update()
     powerups.update()
+    enemies.update()
 
     # Draw / render
     screen.blit(background_img, (0, 0))  # Draw background
     all_sprites.draw(screen)
+
+    # Draw wave counter
+    wave_text = font.render(f"Wave: {wave}", True, WHITE)
+    screen.blit(wave_text, (10, 10))
 
     # Flip the display
     pygame.display.flip()
