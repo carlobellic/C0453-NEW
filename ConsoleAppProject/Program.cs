@@ -1,18 +1,10 @@
-﻿using ConsoleAppProject.App01;
+using ConsoleAppProject.App01;
+using ConsoleAppProject.App02;
 using ConsoleAppProject.App03;
-using ConsoleAppProject.Helpers;
 using System;
 
 namespace ConsoleAppProject
 {
-    /// <summary>
-    /// The main method in this class is called first
-    /// when the application is started.  It will be used
-    /// to start App01 to App05 for CO453 CW1
-    /// 
-    /// This Project has been modified by:
-    /// Derek Peacock 05/02/2022
-    /// </summary>
     public static class Program
     {
         public static void Main(string[] args)
@@ -25,8 +17,39 @@ namespace ConsoleAppProject
             Console.WriteLine(" =================================================");
             Console.WriteLine();
 
-            DistanceConverter converter = new DistanceConverter();
-            converter.Run();
+            while (true)
+            {
+                Console.WriteLine("Please select an application to run:");
+                Console.WriteLine("1. Distance Converter");
+                Console.WriteLine("2. BMI Calculator");
+                Console.WriteLine("3. Student Grades");
+                Console.WriteLine("0. Exit");
+                Console.Write("Enter your choice: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DistanceConverter converter = new DistanceConverter();
+                        converter.Run();
+                        break;
+                    case "2":
+                        BMICalculator bmiCalculator = new BMICalculator();
+                        bmiCalculator.Run();
+                        break;
+                    case "3":
+                        StudentGrades studentGrades = new StudentGrades();
+                        studentGrades.Run();
+                        break;
+                    case "0":
+                        Console.WriteLine("Exiting the application...");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please enter a valid option.");
+                        break;
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
