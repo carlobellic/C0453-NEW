@@ -1,6 +1,6 @@
 import pygame
 import sys
-import random  # Import the random module
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -13,15 +13,23 @@ SCREEN_HEIGHT = 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# Load images
+# Load images and scale them down
 character_img = pygame.image.load("character.png")
+character_img = pygame.transform.scale(character_img, (50, 50))  # Scale character image
+
 bullet_img = pygame.image.load("bullet.png")
+bullet_img = pygame.transform.scale(bullet_img, (10, 10))  # Scale bullet image
+
 speed_powerup_img = pygame.image.load("speed.png")
+speed_powerup_img = pygame.transform.scale(speed_powerup_img, (20, 20))  # Scale powerup image
+
+background_img = pygame.image.load("stone.png")  # Load background image
+background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))  # Scale background image to fit screen
 
 # Game settings
 bullet_speed = 5
 character_speed = 5
-powerup_spawn_time = 5000  # Powerup spawn interval in milliseconds
+powerup_spawn_time = 45000  # Powerup spawn interval in milliseconds (45 seconds)
 
 # Classes
 class Character(pygame.sprite.Sprite):
@@ -138,7 +146,7 @@ while running:
     powerups.update()
 
     # Draw / render
-    screen.fill(BLACK)
+    screen.blit(background_img, (0, 0))  # Draw background
     all_sprites.draw(screen)
 
     # Flip the display
