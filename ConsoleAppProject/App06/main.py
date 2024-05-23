@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 import math
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -13,6 +14,8 @@ SCREEN_HEIGHT = 600
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
 # Load images and scale them down
 character_img = pygame.image.load("character.png")
@@ -39,6 +42,7 @@ powerup_spawn_time = 45000  # Powerup spawn interval in milliseconds (45 seconds
 enemy_spawn_time = 10000  # Enemy spawn interval in milliseconds (10 seconds)
 waves_total = 5
 enemies_per_wave = 5
+damage_cooldown = 2000  # Cooldown in milliseconds (2 seconds)
 
 # Fonts
 font = pygame.font.SysFont(None, 36)
@@ -51,6 +55,8 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.bullet_speed = bullet_speed
+        self.health = 100
+        self.last_hit_time = 0  # Timestamp of the last hit
 
     def update(self, keys_pressed):
         if keys_pressed[pygame.K_LEFT]:
@@ -72,6 +78,29 @@ class Character(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.centery, direction, self.bullet_speed)
         all_sprites.add(bullet)
         bullets.add(bullet)
+
+    def take_damage(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_hit_time > damage_cooldown:
+            self.health -= 1
+            self.last_hit_time = current_time
+            if self.health <= 0:
+                global running
+                running = False
+
+    def draw_health_bar(self, surface):
+        # Calculate health bar dimensions
+        bar_width = 50
+        bar_height = 5
+        bar_x = self.rect.centerx - bar_width // 2
+        bar_y = self.rect.y - bar_height - 5
+        fill = (self.health / 100) * bar_width
+
+        # Draw the health bar
+        outline_rect = pygame.Rect(bar_x, bar_y, bar_width, bar_height)
+        fill_rect = pygame.Rect(bar_x, bar_y, fill, bar_height)
+        pygame.draw.rect(surface, RED, outline_rect)
+        pygame.draw.rect(surface, GREEN, fill_rect)
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, direction, speed):
@@ -124,10 +153,8 @@ class Enemy(pygame.sprite.Sprite):
 
         # Remove enemy if it collides with the character
         if pygame.sprite.collide_rect(self, character):
+            character.take_damage()
             self.kill()
-            # End the game or reduce health
-            global running
-            running = False
 
 # Initialize character
 character = Character()
@@ -218,6 +245,7 @@ while running:
     # Draw / render
     screen.blit(background_img, (0, 0))  # Draw background
     all_sprites.draw(screen)
+    character.draw_health_bar(screen)
 
     # Draw wave counter
     wave_text = font.render(f"Wave: {wave}", True, WHITE)
