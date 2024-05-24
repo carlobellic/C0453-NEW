@@ -5,10 +5,11 @@ namespace ConsoleAppProject.App03
 {
     public class StudentGrades
     {
+// This is an integer that represents the amount of students in the list.
         private const int NumberOfStudents = 10;
         private List<int> marks;
         private string[] students;
-
+// Uses a string to be able to enter the different exam results for the students, by using an int list.
         public StudentGrades()
         {
             marks = new List<int>();
@@ -27,7 +28,7 @@ namespace ConsoleAppProject.App03
             DisplayStatistics();
             DisplayGradeProfile();
         }
-
+// Displays a heading of the name of the application.
         private void OutputHeading()
         {
             Console.WriteLine("--------------------------------");
@@ -35,7 +36,7 @@ namespace ConsoleAppProject.App03
             Console.WriteLine("       by Carl O'Brien          ");
             Console.WriteLine("--------------------------------");
         }
-
+// Allows the user to enter the mark the student has received.
         private void InputMarks()
         {
             for (int i = 0; i < NumberOfStudents; i++)
@@ -45,7 +46,7 @@ namespace ConsoleAppProject.App03
                 marks.Add(mark);
             }
         }
-
+// Converts the marks which are inputted into the program into a grade.
         private void DisplayMarksAndGrades()
         {
             Console.WriteLine("\nStudent Marks and Grades:");
@@ -55,7 +56,7 @@ namespace ConsoleAppProject.App03
                 Console.WriteLine($"{students[i]}: {marks[i]} - {grade}");
             }
         }
-
+// Uses if and else if statements and determines that if a mark is below a certain grade boundary, it will display the correct grade for the student.
         private string ConvertMarkToGrade(int mark)
         {
             if (mark >= 70) return "A (First Class)";
@@ -98,7 +99,7 @@ namespace ConsoleAppProject.App03
                 else if (mark >= 40) gradeCounts[3]++;
                 else gradeCounts[4]++;
             }
-
+// Displays the percentage of distributed students and what mark they had got, for example it could be 40% of students got a B, or 60% students got a C, etc.
             Console.WriteLine("\nGrade Profile:");
             Console.WriteLine($"A (First Class): {GetPercentage(gradeCounts[0])}%");
             Console.WriteLine($"B (Upper Second Class): {GetPercentage(gradeCounts[1])}%");
