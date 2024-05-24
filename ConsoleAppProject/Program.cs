@@ -14,7 +14,7 @@ namespace ConsoleAppProject
             Console.WriteLine("    BNU CO453 Applications Programming 2022-2023! ");
             Console.WriteLine(" =================================================");
             Console.WriteLine();
-
+// Allows the user to select between the 4 different programs available.
             while (true)
             {
                 Console.WriteLine("Please select an application to run:");
@@ -25,7 +25,7 @@ namespace ConsoleAppProject
                 Console.WriteLine("0. Exit");
                 Console.Write("Enter your choice: ");
                 string choice = Console.ReadLine();
-
+// Connects to the name of the class, and then directs to the code which is inside the different classes, allowing the programs to be ran from the program class.
                 switch (choice)
                 {
                     case "1":
@@ -53,7 +53,7 @@ namespace ConsoleAppProject
                 Console.WriteLine();
             }
         }
-
+// This is here because I couldn't figure out how to return the social network code to the main menu without having it inside the program class.
         private static void SocialNetworkApp()
         {
             NewsFeed newsFeed = new NewsFeed();
