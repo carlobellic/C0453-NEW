@@ -9,7 +9,7 @@ namespace ConsoleAppProject.App04
         public DateTime Timestamp { get; set; }
         public int Likes { get; private set; }
         public List<string> Comments { get; private set; }
-
+// Author is the name of the person entered, the code "DateTime.Now" just pulls the current system time, as well as this the comments are just a string.
         public Post(string author)
         {
             Author = author;
