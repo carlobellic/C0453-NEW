@@ -1,6 +1,4 @@
-using ConsoleAppProject.App01;
-using ConsoleAppProject.App02;
-using ConsoleAppProject.App03;
+using ConsoleAppProject.App04;
 using System;
 
 namespace ConsoleAppProject
@@ -23,6 +21,7 @@ namespace ConsoleAppProject
                 Console.WriteLine("1. Distance Converter");
                 Console.WriteLine("2. BMI Calculator");
                 Console.WriteLine("3. Student Grades");
+                Console.WriteLine("4. Social Network");
                 Console.WriteLine("0. Exit");
                 Console.Write("Enter your choice: ");
                 string choice = Console.ReadLine();
@@ -41,8 +40,58 @@ namespace ConsoleAppProject
                         StudentGrades studentGrades = new StudentGrades();
                         studentGrades.Run();
                         break;
+                    case "4":
+                        SocialNetworkApp();
+                        break;
                     case "0":
                         Console.WriteLine("Exiting the application...");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please enter a valid option.");
+                        break;
+                }
+                Console.WriteLine();
+            }
+        }
+
+        private static void SocialNetworkApp()
+        {
+            NewsFeed newsFeed = new NewsFeed();
+
+            while (true)
+            {
+                Console.WriteLine("Social Network:");
+                Console.WriteLine("1. Add Message Post");
+                Console.WriteLine("2. Add Photo Post");
+                Console.WriteLine("3. Display All Posts");
+                Console.WriteLine("0. Return to Main Menu");
+                Console.Write("Enter your choice: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        Console.Write("Enter author: ");
+                        string messageAuthor = Console.ReadLine();
+                        Console.Write("Enter message: ");
+                        string message = Console.ReadLine();
+                        MessagePost messagePost = new MessagePost(messageAuthor, message);
+                        newsFeed.AddPost(messagePost);
+                        break;
+                    case "2":
+                        Console.Write("Enter author: ");
+                        string photoAuthor = Console.ReadLine();
+                        Console.Write("Enter photo filename: ");
+                        string photoFilename = Console.ReadLine();
+                        Console.Write("Enter caption: ");
+                        string caption = Console.ReadLine();
+                        PhotoPost photoPost = new PhotoPost(photoAuthor, photoFilename, caption);
+                        newsFeed.AddPost(photoPost);
+                        break;
+                    case "3":
+                        newsFeed.Display();
+                        break;
+                    case "0":
                         return;
                     default:
                         Console.WriteLine("Invalid choice. Please enter a valid option.");
