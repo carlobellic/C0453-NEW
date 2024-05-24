@@ -32,7 +32,7 @@ namespace ConsoleAppProject.App03
         {
             Console.WriteLine("--------------------------------");
             Console.WriteLine("    Student Grades Application  ");
-            Console.WriteLine("       by Your Name             ");
+            Console.WriteLine("       by Carl O'Brien          ");
             Console.WriteLine("--------------------------------");
         }
 
