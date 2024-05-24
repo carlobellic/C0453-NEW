@@ -6,6 +6,7 @@ namespace ConsoleAppProject.App02
     {
         public void Run()
         {
+// The BMI Calculator Application Displays a heading which allows the user a general background of what the program does.
             Console.WriteLine("BMI Calculator Application");
             Console.WriteLine("Welcome to the BMI Calculator! This application helps you determine your Body Mass Index (BMI) and understand your weight-related health risks.");
             Console.WriteLine("For most adults, BMI provides a good estimate of weight-related health risks.");
@@ -18,6 +19,7 @@ namespace ConsoleAppProject.App02
 
             double bmi = CalculateBMI(weight, height);
             string status = DetermineWeightStatus(bmi);
+// Uses the entered weight and height to be able to calculate the persons BMI based on the WHO Chart, and displays the selected weight category.
 
             Console.WriteLine($"Your BMI is: {bmi:F2}");
             Console.WriteLine($"According to the WHO guidelines, your weight status is: {status}");
@@ -54,7 +56,7 @@ namespace ConsoleAppProject.App02
                 return "Obese Class III";
             }
         }
-
+// This is just a scale of the different ranges of BMI which will determine the weight class.
         static void DisplayWHOWeightStatusCategories()
         {
             Console.WriteLine("WHO Weight Status Categories:");
@@ -81,6 +83,7 @@ namespace ConsoleAppProject.App02
                 }
                 else
                 {
+// Pretty simple here, if you don't enter a positive number it will output that the answer is invalid, as you can't have a negative weight and height.
                     Console.WriteLine("Invalid input. Please enter a positive number.");
                 }
             }
